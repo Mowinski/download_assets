@@ -27,6 +27,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   String? _assetsDir;
   final FileManager fileManager;
   final CustomHttpClient customHttpClient;
+  double minIncrement = 0.1;
 
   @override
   String? get assetsDir => _assetsDir;
@@ -35,7 +36,9 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   Future init({
     String assetDir = 'assets',
     bool useFullDirectoryPath = false,
+    double minThreshold = 0.1,
   }) async {
+    minIncrement = minThreshold;
     if (useFullDirectoryPath) {
       _assetsDir = assetDir;
       return;
@@ -101,11 +104,11 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
             final progress = (received / total) * _maxTotal;
             final increment = progress - previousProgress;
             totalProgress += increment;
-            previousProgress = progress;
 
-            if (totalProgress >= _threshold || increment <= 0.1) {
+            if (totalProgress >= _threshold || increment <= minIncrement) {
               return;
             }
+            previousProgress = progress;
 
             onProgress?.call(totalProgress);
           },

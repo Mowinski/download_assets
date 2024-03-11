@@ -15,6 +15,7 @@ abstract class DownloadAssetsController {
   Future init({
     String assetDir = 'assets',
     bool useFullDirectoryPath = false,
+    double minThreshold = 0.1,
   });
 
   ///Directory that keeps all assets
