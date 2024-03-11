@@ -44,6 +44,7 @@ abstract class DownloadAssetsController {
     required List<String> assetsUrls,
     List<UncompressDelegate> uncompressDelegates = const [UnzipDelegate()],
     Function(double)? onProgress,
+    Function()? onStartUnziping,
     Function()? onCancel,
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},

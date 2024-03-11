@@ -76,6 +76,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     required List<String> assetsUrls,
     List<UncompressDelegate> uncompressDelegates = const [UnzipDelegate()],
     Function(double)? onProgress,
+    Function()? onStartUnziping,
     Function()? onCancel,
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
@@ -115,12 +116,14 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
           requestExtraHeaders: requestExtraHeaders,
           requestQueryParams: requestQueryParams,
         );
+        
+        onProgress?.call(_maxTotal);
 
         for (final delegate in uncompressDelegates) {
           if (delegate.extension != fileExtension) {
             continue;
           }
-
+          onStartUnziping?.call();
           await delegate.uncompress(fullPath, _assetsDir!);
           break;
         }
