@@ -78,6 +78,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     Function(double)? onProgress,
     Function()? onStartUnziping,
     Function()? onCancel,
+    Function()? onDone,
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
   }) async {
@@ -129,9 +130,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
         }
       }
 
-      if (totalProgress >= _threshold) {
-        onProgress?.call(_maxTotal);
-      }
+      onDone?.call();
     } on DownloadAssetsException catch (e) {
       if (e.downloadCancelled) {
         onCancel?.call();

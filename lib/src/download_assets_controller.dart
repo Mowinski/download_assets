@@ -46,6 +46,7 @@ abstract class DownloadAssetsController {
     Function(double)? onProgress,
     Function()? onStartUnziping,
     Function()? onCancel,
+    Function()? onDone,
     Map<String, dynamic>? requestQueryParams,
     Map<String, String> requestExtraHeaders = const {},
   });
