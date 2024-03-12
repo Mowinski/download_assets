@@ -27,7 +27,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   String? _assetsDir;
   final FileManager fileManager;
   final CustomHttpClient customHttpClient;
-  double minIncrement = 0.01;
+  double minIncrement = 0.1;
 
   @override
   String? get assetsDir => _assetsDir;
@@ -36,7 +36,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   Future init({
     String assetDir = 'assets',
     bool useFullDirectoryPath = false,
-    double minThreshold = 0.01,
+    double minThreshold = 0.1,
   }) async {
     minIncrement = minThreshold;
     if (useFullDirectoryPath) {
@@ -86,8 +86,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
     assert(assetsUrls.isNotEmpty, "AssetUrl param can't be empty");
 
     try {
-      var totalProgress = 0.0;
-      onProgress?.call(totalProgress);
+      onProgress?.call(0.0);
       await fileManager.createDirectory(_assetsDir!);
 
       for (final assetsUrl in assetsUrls) {
@@ -105,14 +104,13 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
 
             final progress = (received / total) * _maxTotal;
             final increment = progress - previousProgress;
-            totalProgress += increment;
 
-            if (totalProgress >= _threshold || increment <= minIncrement) {
+            if (increment <= minIncrement) {
               return;
             }
             previousProgress = progress;
 
-            onProgress?.call(totalProgress);
+            onProgress?.call(received / total);
           },
           requestExtraHeaders: requestExtraHeaders,
           requestQueryParams: requestQueryParams,
