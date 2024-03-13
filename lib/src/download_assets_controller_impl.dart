@@ -103,6 +103,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
       }
 
       final List<Future<Response>> responses = [];
+      Map<String, int> downloadedBytesPerAsset = {};
       for (final asset in assets) {
         final response = customHttpClient.download(
           asset.assetUrl,
@@ -112,7 +113,10 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
               return;
             }
 
-            _downloadedSize += received;
+            int previousReceived = downloadedBytesPerAsset[asset.fullPath] ?? 0;
+            _downloadedSize += received - previousReceived;
+            downloadedBytesPerAsset[asset.fullPath] = received;
+
             final progress = _downloadedSize / _totalSize;
 
             onProgress?.call(progress);
