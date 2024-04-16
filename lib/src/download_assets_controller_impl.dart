@@ -26,7 +26,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
   final FileManager fileManager;
   final CustomHttpClient customHttpClient;
   double minIncrement = 0.01;
-  int _totalSize = -1;
+  int _totalSize = 0;
   int _downloadedSize = 0;
 
   @override
@@ -92,7 +92,8 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
       onProgress?.call(0.0);
       await fileManager.createDirectory(_assetsDir!);
       final List<({String assetUrl, String fullPath})> assets = [];
-      _downloadedSize = 0;
+      _downloadedSize = 0; 
+      _totalSize = 0;
 
       for (final assetsUrl in assetsUrls) {
         final fileName = basename(assetsUrl);
@@ -109,7 +110,7 @@ class DownloadAssetsControllerImpl implements DownloadAssetsController {
           asset.assetUrl,
           asset.fullPath,
           onReceiveProgress: (int received, int total) {
-            if (total == -1 || received <= 0) {
+            if (total == -1 || received <= 0 || _totalSize == 0) {
               return;
             }
 
